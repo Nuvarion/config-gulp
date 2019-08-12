@@ -13,8 +13,18 @@ gulp.task('serve', function() {
     })
 })
 
+gulp.task('copy:css', () => {
+    return gulp.src(path.resolve(__dirname, './src/css/*.css'))
+    .pipe(gulp.dest(path.resolve(__dirname,"./dist/css")))
+})
+
+gulp.task('copy:img', () => {
+    return gulp.src(path.resolve(__dirname, './src/image/*.*'))
+    .pipe(gulp.dest(path.resolve(__dirname,"./dist/image")))
+})
+
 gulp.task('build:css', function() {
-    return gulp.src(path.resolve(__dirname, "./src/*.scss"))
+    return gulp.src(path.resolve(__dirname, "./src/css/*.{scss,sass}"))
     .pipe(sass())
     .pipe(autoprefixer( {
         browsers: ['last 2 versions'],
@@ -31,19 +41,21 @@ gulp.task('build:html',function() {
 })
 
 gulp.task('build:js', function() {
-    return gulp.src(path.resolve(__dirname, "./src/*.js"))
+    return gulp.src(path.resolve(__dirname, "./src/js/*.js"))
     .pipe(gulp.dest(path.resolve(__dirname,"./dist/js")))
     .pipe(browserSync.reload({stream: true}));
 })
 
 gulp.task('watch', function(cb) {
-    gulp.watch('./src/*.(sass|scss)', gulp.series('build:css'))
+    gulp.watch('./src/image/*.*', gulp.series('copy:img'))
+    gulp.watch('./src/css/*.css', gulp.series('copy:css'))
+    gulp.watch('./src/css/*.(sass|scss)', gulp.series('build:css'))
     gulp.watch('./src/*.html', gulp.series('build:html'))
     gulp.watch('./src/*.js', gulp.series('build:js'))
     cb();
 })
 
-gulp.task('build', gulp.series('build:html','build:js', 'build:css', 'watch'))
+gulp.task('build', gulp.series('build:html','build:js', 'build:css', 'copy:img', 'copy:css', 'watch'))
 
 
 gulp.task('default', gulp.series('build', gulp.parallel('serve', 'watch')))

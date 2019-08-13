@@ -4,7 +4,7 @@ const path = require('path');
 const browserSync = require('browser-sync');
 const autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('serve', function() {
+gulp.task('serve', () => {
     browserSync({
         server:{
             baseDir: './dist'
@@ -23,7 +23,7 @@ gulp.task('copy:img', () => {
     .pipe(gulp.dest(path.resolve(__dirname,"./dist/image")))
 })
 
-gulp.task('build:css', function() {
+gulp.task('build:css', () => {
     return gulp.src(path.resolve(__dirname, "./src/css/*.{scss,sass}"))
     .pipe(sass())
     .pipe(autoprefixer( {
@@ -34,24 +34,24 @@ gulp.task('build:css', function() {
     .pipe(browserSync.reload({stream: true}));
 })
 
-gulp.task('build:html',function() {
+gulp.task('build:html', () => {
     return gulp.src('./src/*.html')
         .pipe(gulp.dest('./dist'))
         .pipe(browserSync.reload({stream: true}));
 })
 
-gulp.task('build:js', function() {
+gulp.task('build:js', () => {
     return gulp.src(path.resolve(__dirname, "./src/js/*.js"))
     .pipe(gulp.dest(path.resolve(__dirname,"./dist/js")))
     .pipe(browserSync.reload({stream: true}));
 })
 
-gulp.task('watch', function(cb) {
+gulp.task('watch', (cb) => {
     gulp.watch('./src/image/*.*', gulp.series('copy:img'))
     gulp.watch('./src/css/*.css', gulp.series('copy:css'))
     gulp.watch('./src/css/*.(sass|scss)', gulp.series('build:css'))
     gulp.watch('./src/*.html', gulp.series('build:html'))
-    gulp.watch('./src/*.js', gulp.series('build:js'))
+    gulp.watch('./src/js/*.js', gulp.series('build:js'))
     cb();
 })
 
